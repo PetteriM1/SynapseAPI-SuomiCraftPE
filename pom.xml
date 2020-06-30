@@ -7,7 +7,7 @@
     <name>SynapseAPI</name>
     <groupId>org.itxtech.synapse</groupId>
     <artifactId>SynapseAPI</artifactId>
-    <version>PM1E-X</version>
+    <version>PM1E-X-IGN-A</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

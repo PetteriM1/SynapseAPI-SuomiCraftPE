@@ -153,34 +153,36 @@ public class SynapseAPI extends PluginBase implements Listener {
         DataPacket[] packets = e.getPackets();
         HashMap<SynapseEntry, Map<Player, DataPacket[]>> map = new HashMap<>();
 
-        for (Player p : players) {
-            if (!(p instanceof SynapsePlayer)) {
-                continue;
+        getServer().getScheduler().scheduleTask(this, () -> {
+            for (Player p : players) {
+                if (!(p instanceof SynapsePlayer)) {
+                    continue;
+                }
+
+                SynapsePlayer player = (SynapsePlayer) p;
+
+                SynapseEntry entry = player.getSynapseEntry();
+                Map<Player, DataPacket[]> playerPackets = map.get(entry);
+                if (playerPackets == null) {
+                    playerPackets = new HashMap<>();
+                }
+
+                DataPacket[] replaced = Arrays.stream(packets)
+                        .map(packet -> DataPacketEidReplacer.replace(packet, p.getId(), SynapsePlayer.REPLACE_ID))
+                        .toArray(DataPacket[]::new);
+
+                playerPackets.put(player, replaced);
+
+                map.put(entry, playerPackets);
             }
 
-            SynapsePlayer player = (SynapsePlayer) p;
-
-            SynapseEntry entry = player.getSynapseEntry();
-            Map<Player, DataPacket[]> playerPackets = map.get(entry);
-            if (playerPackets == null) {
-                playerPackets = new HashMap<>();
-            }
-
-            DataPacket[] replaced = Arrays.stream(packets)
-                    .map(packet -> DataPacketEidReplacer.replace(packet, p.getId(), SynapsePlayer.REPLACE_ID))
-                    .toArray(DataPacket[]::new);
-
-            playerPackets.put(player, replaced);
-
-            map.put(entry, playerPackets);
-        }
-
-        for (Map.Entry<SynapseEntry, Map<Player, DataPacket[]>> entry : map.entrySet()) {
-            for (Map.Entry<Player, DataPacket[]> playerEntry : entry.getValue().entrySet()) {
-                for (DataPacket pk : playerEntry.getValue()) {
-                    playerEntry.getKey().dataPacket(pk);
+            for (Map.Entry<SynapseEntry, Map<Player, DataPacket[]>> entry : map.entrySet()) {
+                for (Map.Entry<Player, DataPacket[]> playerEntry : entry.getValue().entrySet()) {
+                    for (DataPacket pk : playerEntry.getValue()) {
+                        playerEntry.getKey().dataPacket(pk);
+                    }
                 }
             }
-        }
+        }, true);
     }
 }
