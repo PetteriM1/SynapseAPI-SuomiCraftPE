@@ -17,6 +17,7 @@ import org.itxtech.synapseapi.messaging.StandardMessenger;
 import org.itxtech.synapseapi.utils.DataPacketEidReplacer;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author boybook
@@ -153,7 +154,7 @@ public class SynapseAPI extends PluginBase implements Listener {
         DataPacket[] packets = e.getPackets();
         HashMap<SynapseEntry, Map<Player, DataPacket[]>> map = new HashMap<>();
 
-        getServer().getScheduler().scheduleTask(this, () -> {
+        CompletableFuture.runAsync(() -> {
             for (Player p : players) {
                 if (!(p instanceof SynapsePlayer)) {
                     continue;
@@ -183,6 +184,6 @@ public class SynapseAPI extends PluginBase implements Listener {
                     }
                 }
             }
-        }, true);
+        });
     }
 }

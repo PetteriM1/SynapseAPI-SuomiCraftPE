@@ -35,6 +35,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by boybook on 16/6/24.
@@ -302,7 +303,7 @@ public class SynapsePlayer extends Player {
                 String.valueOf(NukkitMath.round(this.y, 4)),
                 String.valueOf(NukkitMath.round(this.z, 4))));
 
-        this.getServer().getScheduler().scheduleTask(null, () -> {
+        CompletableFuture.runAsync(() -> {
             try {
                 if (!this.isConnected()) return;
                 this.dataPacket(new BiomeDefinitionListPacket());
@@ -339,7 +340,7 @@ public class SynapsePlayer extends Player {
                 this.close("", "Internal Server Error");
                 getServer().getLogger().logException(e);
             }
-        }, true);
+        });
 
         this.setEnableClientCommand(true);
 
