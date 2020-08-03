@@ -99,6 +99,9 @@ public class DataPacketEidReplacer {
             case ProtocolInfo.CONTAINER_OPEN_PACKET:
                 if (((ContainerOpenPacket) packet).entityId == from) ((ContainerOpenPacket) packet).entityId = to;
                 break;
+            case ProtocolInfo.SHOW_CREDITS_PACKET:
+                if (((ShowCreditsPacket) packet).eid == from) ((ShowCreditsPacket) packet).eid = to;
+                break;
             default:
                 change = false;
         }
