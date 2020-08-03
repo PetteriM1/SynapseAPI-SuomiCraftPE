@@ -1,6 +1,6 @@
 name: SynapseAPI
 main: org.itxtech.synapseapi.SynapseAPI
-version: "PM1E"
+version: "PM1E-XNR"
 api: "1.0.9"
 load: STARTUP
 author: iTXTech, PetteriM1

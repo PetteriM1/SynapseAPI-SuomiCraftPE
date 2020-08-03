@@ -358,7 +358,7 @@ public class SynapseEntry {
     private List<DataPacket> processBatch(BatchPacket packet) {
         byte[] data;
         try {
-            data = Network.inflate_raw(packet.payload);
+            data = Network.inflateRaw(packet.payload);
         } catch (Exception e) {
             return new ArrayList<>();
         }
