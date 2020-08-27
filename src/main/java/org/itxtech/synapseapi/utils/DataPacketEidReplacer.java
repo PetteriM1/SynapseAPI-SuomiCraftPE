@@ -102,6 +102,8 @@ public class DataPacketEidReplacer {
             case ProtocolInfo.SHOW_CREDITS_PACKET:
                 if (((ShowCreditsPacket) packet).eid == from) ((ShowCreditsPacket) packet).eid = to;
                 break;
+            case ProtocolInfo.EMOTE_PACKET:
+                if (((EmotePacket) packet).runtimeId == from) ((EmotePacket) packet).runtimeId = to;
             default:
                 change = false;
         }
