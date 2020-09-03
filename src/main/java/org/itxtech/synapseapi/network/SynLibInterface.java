@@ -50,7 +50,7 @@ public class SynLibInterface implements SourceInterface {
         pk.mcpeBuffer = packet instanceof BatchPacket ? Binary.appendBytes((byte) 0xfe, ((BatchPacket) packet).payload) : packet.getBuffer();
 
         if (pk.mcpeBuffer.length >= 5242880) {
-            Server.getInstance().getLogger().error("[Synapse] Too big packet!");
+            Server.getInstance().getLogger().error("[Synapse] Too big packet! (pid: " + packet.pid() + ", player: " + player.getName() + ')');
         } else {
             this.synapseInterface.putPacket(pk);
         }
