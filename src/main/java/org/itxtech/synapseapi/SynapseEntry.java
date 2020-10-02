@@ -249,19 +249,18 @@ public class SynapseEntry {
 
     public void threadTick() {
         this.synapseInterface.process();
-        if (!this.getSynapseInterface().isConnected() || !this.verified) return;
+        if (!this.synapseInterface.isConnected() || !this.verified) return;
         long time = System.currentTimeMillis();
-        if ((time - this.lastUpdate) >= 5000) {
+        if ((time - this.lastUpdate) >= 2000) {
             this.lastUpdate = time;
             HeartbeatPacket pk = new HeartbeatPacket();
-            pk.tps = this.getSynapse().getServer().getTicksPerSecondAverage();
-            pk.load = this.getSynapse().getServer().getTickUsageAverage();
-            pk.upTime = (System.currentTimeMillis() - Nukkit.START_TIME) / 1000;
+            //pk.tps = this.getSynapse().getServer().getTicksPerSecondAverage();
+            //pk.load = this.getSynapse().getServer().getTickUsageAverage();
+            //pk.upTime = (System.currentTimeMillis() - Nukkit.START_TIME) / 1000;
             this.sendDataPacket(pk);
         }
 
-        long finalTime = System.currentTimeMillis();
-        if (((finalTime - this.lastUpdate) >= 30000) && this.synapseInterface.isConnected()) {
+        if (((time - this.lastUpdate) >= 30000) && this.synapseInterface.isConnected()) {
             this.synapseInterface.reconnect();
         }
     }

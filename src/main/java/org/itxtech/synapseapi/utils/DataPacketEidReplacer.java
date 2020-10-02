@@ -104,6 +104,10 @@ public class DataPacketEidReplacer {
                 break;
             case ProtocolInfo.EMOTE_PACKET:
                 if (((EmotePacket) packet).runtimeId == from) ((EmotePacket) packet).runtimeId = to;
+                break;
+            case ProtocolInfo.EMOTE_LIST_PACKET:
+                if (((EmoteListPacket) packet).runtimeId == from) ((EmoteListPacket) packet).runtimeId = to;
+                break;
             default:
                 change = false;
         }
