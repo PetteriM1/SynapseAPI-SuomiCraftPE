@@ -543,6 +543,7 @@ public class SynapsePlayer extends Player {
             if (!this.transferByDescription(l.get(size == 1 ? 0 : new SplittableRandom().nextInt(size)))) {
                 return super.kick(reason, reasonString, isAdmin);
             }
+            this.getServer().getScheduler().scheduleDelayedTask(null, () -> this.close("", "Already transferred", false), 20);
             return false;
         }
 
