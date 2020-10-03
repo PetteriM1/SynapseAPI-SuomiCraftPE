@@ -539,9 +539,15 @@ public class SynapsePlayer extends Player {
             if (size == 0) {
                 return super.kick(reason, reasonString, isAdmin);
             }
-            this.sendMessage("\u00A7cServer is full");
-            if (!this.transferByDescription(l.get(size == 1 ? 0 : new SplittableRandom().nextInt(size)))) {
-                return super.kick(reason, reasonString, isAdmin);
+            if (this.getSynapseEntry().getServerDescription().equals("2b2t") && this.transferByDescription("2b2t-queue")) {
+                this.sendMessage("\u00A7cError");
+            } else if (this.getSynapseEntry().getServerDescription().equals("cpe") && this.transferByDescription("cpe-queue")) {
+                this.sendMessage("\u00A7cError");
+            } else {
+                this.sendMessage("\u00A7cServer is full");
+                if (!this.transferByDescription(l.get(size == 1 ? 0 : new SplittableRandom().nextInt(size)))) {
+                    return super.kick(reason, reasonString, isAdmin);
+                }
             }
             this.getServer().getScheduler().scheduleDelayedTask(null, () -> this.close("", "Already transferred", false), 20);
             return false;
