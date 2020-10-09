@@ -17,6 +17,7 @@ import org.itxtech.synapseapi.messaging.StandardMessenger;
 import org.itxtech.synapseapi.utils.DataPacketEidReplacer;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author boybook
@@ -24,8 +25,10 @@ import java.util.*;
 public class SynapseAPI extends PluginBase implements Listener {
 
     private static SynapseAPI instance;
-    private Map<String, SynapseEntry> synapseEntries = new HashMap<>();
+    private final Map<String, SynapseEntry> synapseEntries = new HashMap<>();
     private Messenger messenger;
+    public static boolean playerCountUpdates = false;
+    public static Map<String, Integer> playerCountData = new ConcurrentHashMap<>();
 
     public static SynapseAPI getInstance() {
         return instance;
