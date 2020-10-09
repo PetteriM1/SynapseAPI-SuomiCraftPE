@@ -256,9 +256,9 @@ public class SynapseEntry {
         if ((time - this.lastUpdate) >= 5000) {
             this.lastUpdate = time;
             HeartbeatPacket pk = new HeartbeatPacket();
-            pk.tps = this.getSynapse().getServer().getTicksPerSecondAverage();
-            pk.load = this.getSynapse().getServer().getTickUsageAverage();
-            pk.upTime = (time - Nukkit.START_TIME) / 1000;
+            //pk.tps = this.getSynapse().getServer().getTicksPerSecondAverage();
+            //pk.load = this.getSynapse().getServer().getTickUsageAverage();
+            //pk.upTime = (time - Nukkit.START_TIME) / 1000;
             this.sendDataPacket(pk);
         }
 
