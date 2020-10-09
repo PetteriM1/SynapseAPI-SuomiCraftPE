@@ -42,6 +42,7 @@ public class SynapseEntry {
     private SynapseInterface synapseInterface;
     private boolean verified;
     private long lastUpdate;
+    private long lastUpdate2;
     private Map<UUID, SynapsePlayer> players = new HashMap<>();
     private SynLibInterface synLibInterface;
     private ClientData clientData;
@@ -65,6 +66,7 @@ public class SynapseEntry {
         this.synapseInterface = new SynapseInterface(this, this.serverIp, this.port);
         this.synLibInterface = new SynLibInterface(this.synapseInterface);
         this.lastUpdate = System.currentTimeMillis();
+        this.lastUpdate2 = this.lastUpdate;
         this.getSynapse().getServer().getScheduler().scheduleRepeatingTask(SynapseAPI.getInstance(), new Ticker(this), 1);
         Thread ticker = new Thread(new AsyncTicker());
         ticker.setName("SynapseAPI Async Ticker");
@@ -253,7 +255,19 @@ public class SynapseEntry {
         this.synapseInterface.process();
         if (!this.synapseInterface.isConnected() || !this.verified) return;
         long time = System.currentTimeMillis();
-        if ((time - this.lastUpdate) >= 5000) {
+        long time_ = time - this.lastUpdate;
+        long time__ = time - this.lastUpdate2;
+
+        if (SynapseAPI.playerCountUpdates && time__ >= 1500) {
+            this.lastUpdate2 = time;
+            PlayerCountPacket pk = new PlayerCountPacket();
+            Map<String, Integer> map = new HashMap<>(1);
+            map.put(this.getServerDescription(), Server.getInstance().getOnlinePlayers().size());
+            pk.data = map;
+            this.sendDataPacket(pk);
+        }
+
+        if (time_ >= 5000) {
             this.lastUpdate = time;
             HeartbeatPacket pk = new HeartbeatPacket();
             //pk.tps = this.getSynapse().getServer().getTicksPerSecondAverage();
@@ -262,7 +276,7 @@ public class SynapseEntry {
             this.sendDataPacket(pk);
         }
 
-        if (((time - this.lastUpdate) >= 30000) && this.synapseInterface.isConnected()) {
+        if (time_ >= 30000 && this.synapseInterface.isConnected()) {
             this.synapseInterface.reconnect();
         }
     }
@@ -344,6 +358,11 @@ public class SynapseEntry {
                 PluginMessagePacket messagePacket = (PluginMessagePacket) pk;
 
                 this.synapse.getMessenger().dispatchIncomingMessage(this, messagePacket.channel, messagePacket.data);
+                break;
+            case SynapseInfo.PLAYER_COUNT_PACKET:
+                if (SynapseAPI.playerCountUpdates) {
+                    SynapseAPI.playerCountData = ((PlayerCountPacket) pk).data;
+                }
                 break;
         }
     }
