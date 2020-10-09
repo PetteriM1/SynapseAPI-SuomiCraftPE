@@ -48,6 +48,8 @@ public class SynapseEntry {
     private ClientData clientData;
     private String serverDescription;
 
+    private static final Gson GSON = new Gson();
+
     public SynapseEntry(SynapseAPI synapse, String serverIp, int port, boolean isLobbyServer, boolean transferOnShutdown, String password, String serverDescription) {
         this.synapse = synapse;
         this.serverIp = serverIp;
@@ -251,19 +253,18 @@ public class SynapseEntry {
 
     public void threadTick() {
         this.synapseInterface.process();
-        if (!this.getSynapseInterface().isConnected() || !this.verified) return;
+        if (!this.synapseInterface.isConnected() || !this.verified) return;
         long time = System.currentTimeMillis();
         if ((time - this.lastUpdate) >= 5000) {
             this.lastUpdate = time;
             HeartbeatPacket pk = new HeartbeatPacket();
             pk.tps = this.getSynapse().getServer().getTicksPerSecondAverage();
             pk.load = this.getSynapse().getServer().getTickUsageAverage();
-            pk.upTime = (System.currentTimeMillis() - Nukkit.START_TIME) / 1000;
+            pk.upTime = (time - Nukkit.START_TIME) / 1000;
             this.sendDataPacket(pk);
         }
 
-        long finalTime = System.currentTimeMillis();
-        if (((finalTime - this.lastUpdate) >= 30000) && this.synapseInterface.isConnected()) {
+        if (((time - this.lastUpdate) >= 30000) && this.synapseInterface.isConnected()) {
             this.synapseInterface.reconnect();
         }
     }
@@ -308,7 +309,7 @@ public class SynapseEntry {
                         }
                         break;
                     case InformationPacket.TYPE_CLIENT_DATA:
-                        this.clientData = new Gson().fromJson(informationPacket.message, ClientData.class);
+                        this.clientData = GSON.fromJson(informationPacket.message, ClientData.class);
                         break;
                 }
                 break;
