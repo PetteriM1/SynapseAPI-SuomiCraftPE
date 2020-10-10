@@ -124,7 +124,7 @@ public class SynapsePlayer extends Player {
         if (oldPlayer != null) {
             oldPlayer.saveNBT();
             nbt = oldPlayer.namedTag;
-            oldPlayer.close("", "disconnectionScreen.loggedinOtherLocation");
+            oldPlayer.close("", "disconnectionScreen.loggedinOtherLocation", false);
         } else {
             File legacyDataFile = new File(server.getDataPath() + "players/" + this.username.toLowerCase() + ".dat");
             File dataFile = new File(server.getDataPath() + "players/" + this.uuid + ".dat");
