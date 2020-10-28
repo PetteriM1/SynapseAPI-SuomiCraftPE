@@ -14,7 +14,6 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.ConfigSection;
 import org.itxtech.synapseapi.messaging.Messenger;
 import org.itxtech.synapseapi.messaging.StandardMessenger;
-import org.itxtech.synapseapi.utils.DataPacketEidReplacer;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -153,9 +152,19 @@ public class SynapseAPI extends PluginBase implements Listener {
     public void onBatchPackets(BatchPacketsEvent e) {
         e.setCancelled(true);
         Player[] players = e.getPlayers();
-
         DataPacket[] packets = e.getPackets();
-        HashMap<SynapseEntry, Map<Player, DataPacket[]>> map = new HashMap<>();
+
+        CompletableFuture.runAsync(() -> {
+            for (Player p : players) {
+                if (!(p instanceof SynapsePlayer)) continue;
+                SynapsePlayer player = (SynapsePlayer) p;
+                for (DataPacket pk : packets) {
+                    player.sendDataPacket(pk, false, false);
+                }
+            }
+        });
+
+        /*HashMap<SynapseEntry, Map<Player, DataPacket[]>> map = new HashMap<>();
 
         CompletableFuture.runAsync(() -> {
             for (Player p : players) {
@@ -187,6 +196,6 @@ public class SynapseAPI extends PluginBase implements Listener {
                     }
                 }
             }
-        });
+        });*/
     }
 }

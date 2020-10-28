@@ -10,7 +10,6 @@ import cn.nukkit.command.data.CommandDataVersions;
 import cn.nukkit.event.entity.EntityMotionEvent;
 import cn.nukkit.event.player.PlayerKickEvent;
 import cn.nukkit.event.player.PlayerLoginEvent;
-import cn.nukkit.event.server.DataPacketSendEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.lang.TextContainer;
 import cn.nukkit.level.Level;
@@ -451,11 +450,11 @@ public class SynapsePlayer extends Player {
 
     public int sendDataPacket(DataPacket packet, boolean needACK, boolean direct) {
         packet = DataPacketEidReplacer.replace(packet, this.getId(), REPLACE_ID);
-        DataPacketSendEvent ev = new DataPacketSendEvent(this, packet);
+        /*DataPacketSendEvent ev = new DataPacketSendEvent(this, packet);
         this.server.getPluginManager().callEvent(ev);
         if (ev.isCancelled()) {
             return -1;
-        }
+        }*/
 
         if (!packet.isEncoded) {
             packet.encode();
