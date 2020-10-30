@@ -316,6 +316,11 @@ public class SynapseEntry {
                         if (informationPacket.message.equals(InformationPacket.INFO_LOGIN_SUCCESS)) {
                             this.getSynapse().getLogger().notice("Login success to " + this.serverIp + ':' + this.port);
                             this.verified = true;
+
+                            //HACK: Avoid ghost players
+                            for (Player p : Server.getInstance().getOnlinePlayers().values()) {
+                                p.close("", "Proxy connection error", false);
+                            }
                         } else if (informationPacket.message.equals(InformationPacket.INFO_LOGIN_FAILED)) {
                             this.getSynapse().getLogger().notice("Login failed to " + this.serverIp + ':' + this.port);
                         }
