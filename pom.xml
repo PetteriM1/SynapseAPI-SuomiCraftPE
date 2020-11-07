@@ -27,10 +27,10 @@
     <dependencies>
         <dependency>
              <groupId>cn.nukkit</groupId>
-             <artifactId>nukkit</artifactId>
-             <version>1.0-SNAPSHOT</version>
+             <artifactId>NukkitIGN</artifactId>
+             <version>PM1E</version>
              <scope>system</scope>
-             <systemPath>${basedir}/lib/nukkit-1.0-SNAPSHOT.jar</systemPath>
+             <systemPath>${basedir}/lib/server.jar</systemPath>
          </dependency>
     </dependencies>
 
