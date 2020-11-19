@@ -302,6 +302,8 @@ public class SynapsePlayer extends Player {
                 String.valueOf(NukkitMath.round(this.y, 4)),
                 String.valueOf(NukkitMath.round(this.z, 4))));
 
+        final Map<UUID, Player> tempOnlinePlayers = getServer().getOnlinePlayers();
+
         CompletableFuture.runAsync(() -> {
             try {
                 if (!this.isConnected()) return;
@@ -312,16 +314,16 @@ public class SynapsePlayer extends Player {
                     this.setRemoveFormat(false);
                 }
 
-                this.sendAttributes();
-                this.setNameTagVisible(true);
-                this.setNameTagAlwaysVisible(true);
-                this.setCanClimb(true);
+                this.setEnableClientCommand(true);
                 this.getAdventureSettings().update();
+                this.inventory.sendCreativeContents();
+                this.sendAttributes();
                 this.sendPotionEffects(this);
                 this.sendData(this);
+                this.setCanClimb(true);
+                this.setNameTagVisible(true);
+                this.setNameTagAlwaysVisible(true);
                 this.sendAllInventories();
-
-                this.inventory.sendCreativeContents();
 
                 this.inventory.sendHeldItem(this);
                 this.server.sendRecipeList(this);
@@ -335,16 +337,15 @@ public class SynapsePlayer extends Player {
                     packet.gameRules = level.getGameRules();
                     this.dataPacket(packet);
                 }
+
+                sendFullPlayerListInternal(this, tempOnlinePlayers);
             } catch (Exception e) {
                 this.close("", "Internal Server Error");
                 getServer().getLogger().logException(e);
             }
         });
 
-        this.setEnableClientCommand(true);
-
         this.server.addOnlinePlayer(this);
-        this.server.onPlayerCompleteLoginSequence(this);
 
         ChunkRadiusUpdatedPacket chunkRadiusUpdatePacket = new ChunkRadiusUpdatedPacket();
         chunkRadiusUpdatePacket.radius = this.chunkRadius;
@@ -352,6 +353,20 @@ public class SynapsePlayer extends Player {
 
         this.getLevel().sendTime(this);
         this.getLevel().sendWeather(this);
+    }
+
+    private void sendFullPlayerListInternal(Player player, Map<UUID, Player> playerList) {
+        PlayerListPacket pk = new PlayerListPacket();
+        pk.type = PlayerListPacket.TYPE_ADD;
+        pk.entries = playerList.values().stream()
+                .map(p -> new PlayerListPacket.Entry(
+                        p.getUniqueId(),
+                        p.getId(),
+                        p.getDisplayName(),
+                        p.getSkin(),
+                        p.getLoginChainData().getXUID()))
+                .toArray(PlayerListPacket.Entry[]::new);
+        player.dataPacket(pk);
     }
 
     protected void forceSendEmptyChunks() {
