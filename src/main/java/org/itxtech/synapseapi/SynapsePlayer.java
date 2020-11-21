@@ -489,7 +489,7 @@ public class SynapsePlayer extends Player {
             }
         }
 
-        if (this.chunk != null) {
+        if (this.chunk != null && this.spawned) {
             this.addMotion(this.motionX, this.motionY, this.motionZ);
             SetEntityMotionPacket pk = new SetEntityMotionPacket();
             pk.eid = this.id;

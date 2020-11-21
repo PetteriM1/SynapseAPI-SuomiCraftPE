@@ -14,9 +14,9 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.ConfigSection;
 import org.itxtech.synapseapi.messaging.Messenger;
 import org.itxtech.synapseapi.messaging.StandardMessenger;
-import org.itxtech.synapseapi.utils.DataPacketEidReplacer;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -152,38 +152,16 @@ public class SynapseAPI extends PluginBase implements Listener {
     public void onBatchPackets(BatchPacketsEvent e) {
         e.setCancelled(true);
         Player[] players = e.getPlayers();
-
         DataPacket[] packets = e.getPackets();
-        HashMap<SynapseEntry, Map<Player, DataPacket[]>> map = new HashMap<>();
 
-        for (Player p : players) {
-            if (!(p instanceof SynapsePlayer)) {
-                continue;
-            }
-
-            SynapsePlayer player = (SynapsePlayer) p;
-
-            SynapseEntry entry = player.getSynapseEntry();
-            Map<Player, DataPacket[]> playerPackets = map.get(entry);
-            if (playerPackets == null) {
-                playerPackets = new HashMap<>();
-            }
-
-            DataPacket[] replaced = Arrays.stream(packets)
-                    .map(packet -> DataPacketEidReplacer.replace(packet, p.getId(), SynapsePlayer.REPLACE_ID))
-                    .toArray(DataPacket[]::new);
-
-            playerPackets.put(player, replaced);
-
-            map.put(entry, playerPackets);
-        }
-
-        for (Map.Entry<SynapseEntry, Map<Player, DataPacket[]>> entry : map.entrySet()) {
-            for (Map.Entry<Player, DataPacket[]> playerEntry : entry.getValue().entrySet()) {
-                for (DataPacket pk : playerEntry.getValue()) {
-                    playerEntry.getKey().dataPacket(pk);
+        CompletableFuture.runAsync(() -> {
+            for (Player p : players) {
+                if (!(p instanceof SynapsePlayer)) continue;
+                SynapsePlayer player = (SynapsePlayer) p;
+                for (DataPacket pk : packets) {
+                    player.sendDataPacket(pk, false, false);
                 }
             }
-        }
+        });
     }
 }
