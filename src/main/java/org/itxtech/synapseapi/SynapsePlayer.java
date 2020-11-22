@@ -308,7 +308,7 @@ public class SynapsePlayer extends Player {
                 enableCommandsPK.enabled = this.isEnableClientCommand();
                 this.dataPacket(enableCommandsPK);
 
-                if (!op && this.isEnableClientCommand()) {
+                if (this.isEnableClientCommand()) {
                     this.getServer().getScheduler().scheduleDelayedTask(null, () -> {
                         if (this.isOnline()) {
                             this.sendCommandData();
