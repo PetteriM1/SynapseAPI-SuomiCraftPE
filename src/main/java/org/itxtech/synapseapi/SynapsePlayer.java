@@ -330,7 +330,7 @@ public class SynapsePlayer extends Player {
                     InventoryContentPacket inventoryContentPacket = new InventoryContentPacket();
                     inventoryContentPacket.inventoryId = ContainerIds.CREATIVE;
                     this.dataPacket(inventoryContentPacket);
-                } else {
+                } else if (this.isFirstTimeLogin) {
                     this.inventory.sendCreativeContents();
                 }
 
@@ -379,22 +379,6 @@ public class SynapsePlayer extends Player {
                         p.getLoginChainData().getXUID()))
                 .toArray(PlayerListPacket.Entry[]::new);
         player.dataPacket(pk);
-    }
-
-    protected void forceSendEmptyChunks() {
-        int chunkPositionX = this.getFloorX() >> 4;
-        int chunkPositionZ = this.getFloorZ() >> 4;
-        List<LevelChunkPacket> pkList = new ArrayList<>();
-        for (int x = -3; x < 3; x++) {
-            for (int z = -3; z < 3; z++) {
-                LevelChunkPacket chunk = new LevelChunkPacket();
-                chunk.chunkX = chunkPositionX + x;
-                chunk.chunkZ = chunkPositionZ + z;
-                chunk.data = new byte[0];
-                pkList.add(chunk);
-            }
-        }
-        Server.getInstance().batchPackets(new Player[]{this}, pkList.toArray(new DataPacket[0]));
     }
 
     public boolean transferByDescription(String serverDescription) {
