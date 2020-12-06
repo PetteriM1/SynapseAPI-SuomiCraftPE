@@ -348,6 +348,7 @@ public class SynapseEntry {
                         } catch (ArrayIndexOutOfBoundsException ex) {
                             SynapsePlayer player = this.players.get(uuid);
                             player.kick(PlayerKickEvent.Reason.UNKNOWN, "Exception while handling incoming packet: \n" + ex.toString(), false);
+                            ex.printStackTrace();
                             break;
                         }
                         SynapsePlayer player = this.players.get(uuid);
