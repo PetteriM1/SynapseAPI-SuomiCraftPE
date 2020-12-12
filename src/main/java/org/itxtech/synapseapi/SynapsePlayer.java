@@ -457,6 +457,12 @@ public class SynapsePlayer extends Player {
     }
 
     @Override
+    public boolean batchDataPacket(DataPacket packet) {
+        if (!this.isSynapseLogin) return super.batchDataPacket(packet);
+        return sendDataPacket(packet, false, false) != -1;
+    }
+
+    @Override
     public int directDataPacket(DataPacket packet, boolean needACK) {
         if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
         return this.dataPacket(packet) ? 0 : -1;
