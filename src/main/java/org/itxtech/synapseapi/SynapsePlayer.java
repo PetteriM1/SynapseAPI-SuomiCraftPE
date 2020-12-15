@@ -378,7 +378,16 @@ public class SynapsePlayer extends Player {
                         p.getSkin(),
                         p.getLoginChainData().getXUID()))
                 .toArray(PlayerListPacket.Entry[]::new);
-        player.dataPacket(pk);
+        if (this.isSynapseLogin) {
+            pk = (PlayerListPacket) DataPacketEidReplacer.replace(pk, this.getId(), REPLACE_ID);
+            if (!pk.isEncoded) {
+                pk.encode();
+                pk.isEncoded = true;
+            }
+            this.interfaz.putPacket(this, pk.compress(9), false, false);
+        } else {
+            player.dataPacket(pk);
+        }
     }
 
     public boolean transferByDescription(String serverDescription) {
