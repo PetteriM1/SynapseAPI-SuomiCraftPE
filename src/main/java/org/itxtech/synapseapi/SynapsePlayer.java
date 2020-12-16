@@ -458,29 +458,35 @@ public class SynapsePlayer extends Player {
     }
 
     @Override
-    public int dataPacket(DataPacket packet, boolean needACK) {
-        if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
-        return sendDataPacket(packet, needACK, false);
+    public boolean dataPacket(DataPacket packet) {
+        if (!this.isSynapseLogin) return super.dataPacket(packet);
+        return sendDataPacket(packet, false, false);
     }
 
     @Override
-    public boolean batchDataPacket(DataPacket packet) {
-        if (!this.isSynapseLogin) return super.batchDataPacket(packet);
-        return sendDataPacket(packet, false, false) != -1;
+    public int dataPacket(DataPacket packet, boolean needACK) {
+        if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
+        return this.dataPacket(packet) ? 0 : -1;
+    }
+
+    @Override
+    public boolean directDataPacket(DataPacket packet) {
+        if (!this.isSynapseLogin) return super.dataPacket(packet);
+        return sendDataPacket(packet, false, true);
     }
 
     @Override
     public int directDataPacket(DataPacket packet, boolean needACK) {
-        if (!this.isSynapseLogin) return super.directDataPacket(packet, needACK);
-        return sendDataPacket(packet, needACK, true);
+        if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
+        return this.dataPacket(packet) ? 0 : -1;
     }
 
-    public int sendDataPacket(DataPacket packet, boolean needACK, boolean direct) {
+    public boolean sendDataPacket(DataPacket packet, boolean needACK, boolean direct) {
         packet = DataPacketEidReplacer.replace(packet, this.getId(), REPLACE_ID);
         /*DataPacketSendEvent ev = new DataPacketSendEvent(this, packet);
         this.server.getPluginManager().callEvent(ev);
         if (ev.isCancelled()) {
-            return -1;
+            return false;
         }*/
 
         if (!packet.isEncoded) {
@@ -488,7 +494,8 @@ public class SynapsePlayer extends Player {
             packet.isEncoded = true;
         }
 
-        return this.interfaz.putPacket(this, packet, needACK, direct);
+        this.interfaz.putPacket(this, packet, false, direct);
+        return true;
     }
 
     @Override
