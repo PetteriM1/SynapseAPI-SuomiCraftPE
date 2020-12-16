@@ -238,6 +238,13 @@ public class SynapsePlayer extends Player {
         } else {
             this.shouldLogin = true;
         }
+
+        if (this.hasPermission(Server.BROADCAST_CHANNEL_USERS)) {
+            this.server.getPluginManager().subscribeToPermission(Server.BROADCAST_CHANNEL_USERS, this);
+        }
+        if (this.hasPermission(Server.BROADCAST_CHANNEL_ADMINISTRATIVE)) {
+            this.server.getPluginManager().subscribeToPermission(Server.BROADCAST_CHANNEL_ADMINISTRATIVE, this);
+        }
     }
 
     @Override
@@ -466,7 +473,7 @@ public class SynapsePlayer extends Player {
     @Override
     public int dataPacket(DataPacket packet, boolean needACK) {
         if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
-        return this.dataPacket(packet) ? 0 : -1;
+        return this.sendDataPacket(packet, false, false) ? 0 : -1;
     }
 
     @Override
@@ -478,7 +485,7 @@ public class SynapsePlayer extends Player {
     @Override
     public int directDataPacket(DataPacket packet, boolean needACK) {
         if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
-        return this.dataPacket(packet) ? 0 : -1;
+        return this.sendDataPacket(packet, false, false) ? 0 : -1;
     }
 
     public boolean sendDataPacket(DataPacket packet, boolean needACK, boolean direct) {
