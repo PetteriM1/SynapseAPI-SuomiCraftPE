@@ -334,11 +334,7 @@ public class SynapsePlayer extends Player {
 
                 this.sendAttributes();
 
-                if (this.gamemode == Player.SPECTATOR) {
-                    InventoryContentPacket inventoryContentPacket = new InventoryContentPacket();
-                    inventoryContentPacket.inventoryId = ContainerIds.CREATIVE;
-                    this.dataPacket(inventoryContentPacket);
-                } else if (this.isFirstTimeLogin) {
+                if (this.isFirstTimeLogin) {
                     this.inventory.sendCreativeContents();
                 }
 
