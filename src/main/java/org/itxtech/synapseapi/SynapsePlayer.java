@@ -334,9 +334,9 @@ public class SynapsePlayer extends Player {
 
                 this.sendAttributes();
 
-                if (this.isFirstTimeLogin) {
+                //if (this.isFirstTimeLogin) {
                     this.inventory.sendCreativeContents();
-                }
+                //}
 
                 this.sendAllInventories();
                 this.inventory.sendHeldItem(this);
