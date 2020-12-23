@@ -276,7 +276,7 @@ public class SynapsePlayer extends Player {
             startGamePacket.commandsEnabled = this.isEnableClientCommand();
             startGamePacket.worldName = this.getServer().getNetwork().getName();
             startGamePacket.gameRules = this.getLevel().getGameRules();
-            this.dataPacket(startGamePacket);
+            this.directDataPacket(startGamePacket);
         } else {
             AdventureSettings newSettings = this.getAdventureSettings().clone(this);
             newSettings.set(Type.WORLD_IMMUTABLE, (gamemode & 0x02) > 0);
