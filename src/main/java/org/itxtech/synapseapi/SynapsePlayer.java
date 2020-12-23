@@ -18,7 +18,6 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.*;
 import cn.nukkit.network.SourceInterface;
 import cn.nukkit.network.protocol.*;
-import cn.nukkit.network.protocol.types.ContainerIds;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.TextFormat;
 import org.itxtech.synapseapi.event.player.SynapseFullServerPlayerTransferEvent;
@@ -281,7 +280,7 @@ public class SynapsePlayer extends Player {
             startGamePacket.commandsEnabled = this.isEnableClientCommand();
             startGamePacket.worldName = this.getServer().getNetwork().getName();
             startGamePacket.gameRules = this.getLevel().getGameRules();
-            this.dataPacket(startGamePacket);
+            this.directDataPacket(startGamePacket);
         }
 
         this.loggedIn = true;
@@ -469,7 +468,7 @@ public class SynapsePlayer extends Player {
     @Override
     public int dataPacket(DataPacket packet, boolean needACK) {
         if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
-        return this.sendDataPacket(packet, false, false) ? 0 : -1;
+        return this.sendDataPacket(packet, needACK, false) ? 0 : -1;
     }
 
     @Override
@@ -479,9 +478,15 @@ public class SynapsePlayer extends Player {
     }
 
     @Override
+    public boolean batchDataPacket(DataPacket packet) {
+        if (!this.isSynapseLogin) return super.batchDataPacket(packet);
+        return sendDataPacket(packet, false, false);
+    }
+
+    @Override
     public int directDataPacket(DataPacket packet, boolean needACK) {
         if (!this.isSynapseLogin) return super.dataPacket(packet, needACK);
-        return this.sendDataPacket(packet, false, false) ? 0 : -1;
+        return this.sendDataPacket(packet, needACK, false) ? 0 : -1;
     }
 
     public boolean sendDataPacket(DataPacket packet, boolean needACK, boolean direct) {
