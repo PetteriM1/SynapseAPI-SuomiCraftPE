@@ -383,6 +383,7 @@ public class SynapsePlayer extends Player {
                 .toArray(PlayerListPacket.Entry[]::new);
         if (this.isSynapseLogin) {
             pk = (PlayerListPacket) DataPacketEidReplacer.replace(pk, this.getId(), REPLACE_ID);
+            pk.protocol = this.protocol;
             if (!pk.isEncoded) {
                 pk.encode();
                 pk.isEncoded = true;
